@@ -1,0 +1,2 @@
+- name: Add image puller roles to default service account
+  command: "oc policy add-role-to-user {{ocp_role}} system:serviceaccount:{{project_from}}:default -n {{project_to}}"
