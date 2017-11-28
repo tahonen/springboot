@@ -1,0 +1,119 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: prodtest-template
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      openshift.io/generated-by: Ansible
+    creationTimestamp: null
+    labels:
+      app: {{service_name}}
+    name: {{service_name}}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      deploymentconfig: {{service_name}}
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: Ansible
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: {{service_name}}
+    name: {{service_name}}
+  spec:
+    replicas: 1
+    selector:
+      deploymentconfig: {{service_name}}
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: {{service_name}}
+          deploymentconfig: {{service_name}}
+      spec:
+        containers:
+        - image: {{dev_project}}/{{service_name}}:{{tag_test}}
+          imagePullPolicy: Always
+          name: {{service_name}}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - {{service_name}}
+        from:
+          kind: ImageStreamTag
+          name: {{service_name}}:{{tag_test}}
+          namespace: {{dev_project}}
+      type: ImageChange
+    - type: ConfigChange
+  status:
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/generated-by: Ansible
+      openshift.io/host.generated: "true"
+    labels:
+      app: {{service_name}}
+    name: {{service_name}}
+  spec:
+    host: {{test_hostname}}
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: {{service_name}}
+      weight: 100
+    wildcardPolicy: None
+parameters:
+- description: Github trigger secret.  A difficult to guess string encoded as part of the webhook URL.  Not encrypted.
+  displayName: GitHub Webhook Secret
+  from: '[a-zA-Z0-9]{40}'
+  generate: expression
+  name: WEBHOOK_SECRET

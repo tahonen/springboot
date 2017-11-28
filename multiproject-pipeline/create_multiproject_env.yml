@@ -1,0 +1,73 @@
+---
+- name: Initialize projects
+  hosts: masters[0]
+  gather_facts: no
+  vars_files:
+  - config.yml
+  roles:
+  - role: new_project
+    project_name: "{{dev_project}}"
+    display_name: Dev Project
+    description: "Project for dev deployment"
+  - role: new_project
+    project_name: "{{test_project}}"
+    display_name: Test Project
+    description: "Project for test deployment"
+  - role: new_project
+    project_name: "{{prod_project}}"
+    display_name: Prod Project
+    description: "Project for prod deployment"
+  - role: new_project
+    project_name: "pipeline-support"
+    display_name: "Pipeline support"
+    description: "Support project for pipeline"
+- name: Initialize image pulling from project 2 project
+  hosts: masters[0]
+  gather_facts: no
+  vars_files:
+  - config.yml
+  roles:
+  - role: project_acl
+    ocp_role: system:image-puller
+    project_from: "{{test_project}}"
+    project_to: "{{dev_project}}"
+  - role: project_acl
+    ocp_role: system:image-puller
+    project_from: "{{prod_project}}"
+    project_to: "{{dev_project}}"
+- name: Create OCP objects
+  hosts: masters[0]
+  vars_files:
+  - config.yml
+  gather_facts: no
+  tasks:
+  - name: Create dev project objects
+    template:
+      src: templates/dev_template.j2
+      dest: /tmp/dev_template.yml
+  - name: Process dev project template
+    shell: |
+      oc process -f /tmp/dev_template.yml | oc create -n {{dev_project}} -f -
+  - name: Create test project objects
+    template:
+      src: templates/test_template.j2
+      dest: /tmp/test_template.yml
+  - name: Process dev project template
+    shell: |
+      oc process -f /tmp/test_template.yml | oc create -n {{test_project}} -f -
+  - name: Create prod project objects
+    template:
+      src: templates/prod_template.j2
+      dest: /tmp/prod_template.yml
+  - name: Process prod project template
+    shell: |
+      oc process -f /tmp/prod_template.yml | oc create -n {{prod_project}} -f -
+  - name: Add access to different users
+    command: "{{item}}"
+    with_items:
+    - "oc policy add-role-to-user admin developer -n {{dev_project}}"
+    - "oc policy add-role-to-user edit developer -n {{test_project}}"
+    - "oc policy add-role-to-user view developer -n {{prod_project}}"
+    - "oc policy add-role-to-user view manager -n {{dev_project}}"
+    - "oc policy add-role-to-user admin manager -n {{test_project}}"
+    - "oc policy add-role-to-user admin manager -n {{prod_project}}"
