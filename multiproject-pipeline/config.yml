@@ -1,6 +1,6 @@
-dev_project: atos-dev
-test_project: atos-test
-prod_project: atos-prod
+dev_project: dev
+test_project: test
+prod_project: prod
 tag_prod: toprod
 tag_test: totest
 builder_image: redhat-openjdk18-openshift:1.1
@@ -12,4 +12,4 @@ release_hostname: bluegreen.apps.ocp.ninja
 source: https://github.com/tahonen/hello-springboot.git
 source_branch: master
 apps_dns: apps.ocp.ninja
-slack_webhook: https://hooks.slack.com/services/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
+slack_webhook: ''
