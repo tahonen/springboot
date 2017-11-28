@@ -1,4 +1,4 @@
-package com.redhat.coolstore.productcatalog;
+package com.redhat.emeatigers.springboot.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,17 +13,17 @@ import javax.inject.Inject;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("dev")
-public class ProductCatalogApplicationTests {
+public class SpringBootAppTests {
 
 	@Inject
-	ProductCatalogService service;
+	SpringBootService service;
 
 	@Test
 	public void contextLoads() {
 	}
 
 	@Test
-    public void testDefaultProductList() {
+    public void testSayHello() {
         String message = service.sayHello();
         assertTrue(message!=null);
         assertEquals(message,"Hey Developer!");

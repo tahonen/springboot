@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.redhat.coolstore</groupId>
-	<artifactId>product-catalog</artifactId>
+	<groupId>com.redhat.emeatigers.springboot</groupId>
+	<artifactId>springboot-serice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -12,9 +12,10 @@
 	<description>Demo project for Spring Boot</description>
 
   <parent>
-		<groupId>io.openshift</groupId>
-		<artifactId>booster-parent</artifactId>
-		<version>6</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.1.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -28,10 +29,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-actuator</artifactId>
-    </dependency>
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
@@ -64,6 +62,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 
 
 </project>

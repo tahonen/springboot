@@ -1,4 +1,4 @@
-package com.redhat.coolstore.productcatalog;
+package com.redhat.emeatigers.springboot.service;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,13 +8,13 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 
 @Configuration
-public class ProductCatalogConfiguration {
-	
+public class SpringBootConfiguration {
+
 	@Bean
 	public JacksonJsonProvider jsonProvider(ObjectMapper objectMapper) {
 		JacksonJaxbJsonProvider provider = new JacksonJaxbJsonProvider();
 		provider.setMapper(objectMapper);
 		return provider;
     }
-    
+
 }
