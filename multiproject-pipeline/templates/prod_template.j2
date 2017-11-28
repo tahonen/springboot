@@ -243,10 +243,10 @@ objects:
               echo "Active svc: " + currentDeployment
               echo "Dest svc:   " + dest
               sh "oc rollout latest $dest -n {{prod_project}}"
-              sh "oc expose svc $dest --name={{prod_project}}-rel --hostname={{service_name}}-release.{{apps_dns}} -n {{prod_project}}"
+              sh "oc expose svc $dest --name={{prod_project}}-release --hostname={{service_name}}-release.{{apps_dns}} -n {{prod_project}}"
               sh "oc scale dc/$dest --replicas=1 -n {{prod_project}}"
               sh 'oc annotate bc release-pipeline -n {{prod_project}} --overwrite pipeline.alpha.openshift.io/uses=\'[{"name": "' + dest + '", "namespace": "{{prod_project}}", "kind": "DeploymentConfig"}]\''
-              sh 'oc annotate route {{prod_project}}-rel -n {{prod_project}} --overwrite pipeline.alpha.openshift.io/uses=\'[{"name": "' + dest + '", "namespace": "{{prod_project}}", "kind": "DeploymentConfig"}]\''
+              sh 'oc annotate route {{prod_project}}-release -n {{prod_project}} --overwrite pipeline.alpha.openshift.io/uses=\'[{"name": "' + dest + '", "namespace": "{{prod_project}}", "kind": "DeploymentConfig"}]\''
               notifySlack("{{service_name}} - New release deployed for verification", 'jenkinsbuilds', [])
             }
 
@@ -258,7 +258,7 @@ objects:
               echo "B deployment is currently: "+dest
               sh 'oc get route {{service_name}}r -n {{prod_project}}'
               sh "oc scale dc/$currentDeployment --replicas=2 -n {{prod_project}}"
-              sh "oc delete route {{service_name}}-rel -n {{prod_project}}"
+              sh "oc delete route {{service_name}}-release -n {{prod_project}}"
             }
             stage('release new version') {
               notifySlack("{{prod_project}} - Waiting for approval to deploy new version to production. <"+inputRootUrl+env.BUILD_NUMBER+"/input|Approve>", 'jenkinsbuilds', [])
