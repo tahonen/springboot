@@ -210,7 +210,7 @@ objects:
               }
               stage ('deploy to dev') {
                 sh "oc start-build {{service_name}} --from-dir=. --wait=true -n {{dev_project}}"
-                notifySlack("{{service_name}} - New build deployed to DEV!", 'jenkinsbuilds', [])
+                notifySlack("{{service_name}}-{{dev_project}} - New build deployed to DEV!", 'jenkinsbuilds', [])
               }
 
               stage ('deploy test') {
