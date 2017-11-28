@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.redhat.emeatigers.springboot</groupId>
-	<artifactId>springboot-serice</artifactId>
+	<artifactId>springboot-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
