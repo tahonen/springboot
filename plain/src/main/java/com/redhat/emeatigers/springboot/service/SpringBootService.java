@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Path("/hello")
 public class SpringBootService {
 
-  @Value("${service.message:Hello World!}")
+  @Value("${service.message:Hello Worldxxxxx!}")
   String message;
 
   public String sayHello() {
